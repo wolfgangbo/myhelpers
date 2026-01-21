@@ -9,7 +9,7 @@ Some scripts I use in my daily life.
 - [rename_files.sh](bash/rename_files.sh): Rename multiple files with a given pattern.
 - [ssh_config.sh](bash/ssh_config.sh): Manage SSH configuration files.
 - [update_packages.sh](bash/update_packages.sh): Update system packages and dependencies.
-- [easyconv](bash/easyconv): Convert files between different formats to utf-8 [with BOM].
+- [easyconv](bash/easyconv.sh): Convert files between different formats to utf-8 [with BOM].
 
 ## fish
 
