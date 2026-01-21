@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Make script executable and run
+      - name: Show workspace directory
         run: echo ${{ github.workspace }}
       - name: Make script executable and run
         # Add executable permissions to the script before running
@@ -19,4 +19,5 @@ jobs:
             sudo cp "$f" "/usr/local/bin/$filename"
             sudo chmod +x "/usr/local/bin/$filename"
           done
-          ls -la /usr/local/bin
+      - name: Show /usr/local/bin directory
+        run: ls -la /usr/local/bin
