@@ -1,0 +1,22 @@
+name: Run check my bin files
+on: [push]
+
+jobs:
+  run-script-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Make script executable and run
+        run: echo ${{ github.workspace }}
+      - name: Make script executable and run
+        # Add executable permissions to the script before running
+        run: |
+          for f in ${{ github.workspace }}/bash/*; do
+            # Extract filename without .sh extension
+            filename=$(basename "$f" .sh)
+            # Copy to /usr/local/bin with new name and make executable
+            sudo cp "$f" "/usr/local/bin/$filename"
+            sudo chmod +x "/usr/local/bin/$filename"
+          done
+          ls -la /usr/local/bin
