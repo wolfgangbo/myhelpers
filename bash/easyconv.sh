@@ -115,7 +115,7 @@ log() {
 check_deps() {
     for cmd in file iconv; do
         if ! command -v "$cmd" &> /dev/null; then
-            printf "${RED}Error: '$cmd' not found. Install with: sudo apt install file libc-bin${NC}\n" >&2
+            printf "%s Error: '$cmd' not found. Install with: sudo apt install file libc-bin${NC}\n" "${RED}" >&2
             exit 1
         fi
     done
@@ -123,14 +123,16 @@ check_deps() {
 
 is_utf8() {
     local file=$1
-    local enc=$(file -b --mime-encoding "$file" 2>/dev/null || echo "unknown")
+    local enc
+    enc=$(file -b --mime-encoding "$file" 2>/dev/null || echo "unknown")
     [[ "$enc" =~ ^(utf-8|us-ascii)$ ]]
 }
 
 has_bom() {
     local file=$1
     # Check if file starts with UTF-8 BOM (EF BB BF)
-    local first_bytes=$(head -c 3 "$file" 2>/dev/null | od -An -tx1 | tr -d ' \n')
+    local first_bytes
+    first_bytes=$(head -c 3 "$file" 2>/dev/null | od -An -tx1 | tr -d ' \n')
     [ "$first_bytes" = "efbbbf" ]
 }
 
@@ -153,13 +155,14 @@ remove_bom() {
 
 convert_file() {
     local file=$1
-    local base=$(basename "$file")
-    local already_utf8=false
+    local base
+        base=$(basename "$file")
+    # local already_utf8=false
     local had_bom=false
     
     # Check if already UTF-8
     if is_utf8 "$file"; then
-        already_utf8=true
+        # already_utf8=true
         had_bom=$(has_bom "$file" && echo true || echo false)
         
         # If already UTF-8, we might still need to adjust BOM
@@ -198,7 +201,8 @@ convert_file() {
         fi
     fi
     
-    local from_enc=$(file -b --mime-encoding "$file" 2>/dev/null || echo "unknown")
+    local from_enc
+        from_enc=$(file -b --mime-encoding "$file" 2>/dev/null || echo "unknown")
     
     if [ "$DRY_RUN" = true ]; then
         printf "  ${BLUE}DRY${NC}  %s (%s -> UTF-8%s)\n" "$base" "$from_enc" "$([ "$ADD_BOM" = true ] && echo " with BOM" || echo "")"
@@ -281,7 +285,7 @@ process_dir() {
     # Add file type filter
     find_args+=(-type f \()
     for i in "${!FILE_EXTENSIONS[@]}"; do
-        [ $i -gt 0 ] && find_args+=(-o)
+        [ "$i" -gt 0 ] && find_args+=(-o)
         find_args+=(-name "${FILE_EXTENSIONS[$i]}")
     done
     find_args+=(\) -print)
@@ -296,7 +300,7 @@ process_dir() {
     local count=${#files[@]}
     printf "Found %d files\n\n" "$count"
     
-    if [ $count -eq 0 ]; then
+    if [ "$count" -eq 0 ]; then
         printf "No files to process!\n"
         return
     fi
@@ -369,7 +373,7 @@ main() {
             -e|--extensions)
                 IFS=',' read -ra FILE_EXTENSIONS <<< "$2"
                 for i in "${!FILE_EXTENSIONS[@]}"; do
-                    FILE_EXTENSIONS[$i]="*.${FILE_EXTENSIONS[$i]#*.}"
+                    FILE_EXTENSIONS[i]="*.${FILE_EXTENSIONS[i]#*.}"
                 done
                 shift 2
                 ;;

@@ -1,0 +1,62 @@
+name: Test Scripts
+
+on:
+  push:
+    paths:
+      - "bash/**"
+      - "fish/**"
+      - ".github/workflows/test_script.yaml"
+  pull_request:
+    paths:
+      - "bash/**"
+      - "fish/**"
+      - ".github/workflows/test_script.yaml"
+  workflow_dispatch:
+
+jobs:
+  test-scripts:
+    name: Test Bash and Fish Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fish shellcheck
+
+      - name: Run ShellCheck (Bash)
+        run: shellcheck bash/*.sh
+
+      - name: Syntax Check (Bash)
+        run: |
+          for file in bash/*.sh; do
+            bash -n "$file" || exit 1
+          done
+
+      - name: Syntax Check (Fish)
+        run: |
+          for file in fish/*.fish; do
+            fish -n "$file" || exit 1
+          done
+
+      - name: Make scripts executable
+        run: |
+          chmod +x bash/*.sh
+          chmod +x fish/*.fish
+
+      - name: Smoke Test (Bash --help)
+        run: |
+          for file in bash/*.sh; do
+            echo "Running $file --help"
+            ./"$file" --help || exit 1
+          done
+
+      - name: Smoke Test (Fish --help)
+        shell: fish
+        run: |
+          for file in fish/*.fish
+            echo "Running $file --help"
+            ./$file --help || exit 1
+          end

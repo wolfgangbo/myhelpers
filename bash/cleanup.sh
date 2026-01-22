@@ -85,7 +85,8 @@ cleanup_directory() {
             echo "[DRY RUN] Would delete: $file"
         done
     else
-        local count=$(find "$dir" -type f -mtime +7 2>/dev/null | wc -l)
+        local count
+        count=$(find "$dir" -type f -mtime +7 2>/dev/null | wc -l)
         find "$dir" -type f -mtime +7 -delete 2>/dev/null
         echo "Deleted $count file(s) older than 7 days"
     fi

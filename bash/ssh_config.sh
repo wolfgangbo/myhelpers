@@ -8,7 +8,7 @@ SSH_CONFIG="$HOME/.ssh/config"
 SSH_DIR="$HOME/.ssh"
 
 show_help() {
-    cat << EOF
+	cat <<EOF
 Usage: $(basename "$0") [COMMAND] [OPTIONS]
 
 Manage SSH configuration files.
@@ -34,133 +34,137 @@ EOF
 }
 
 ensure_ssh_dir() {
-    if [ ! -d "$SSH_DIR" ]; then
-        mkdir -p "$SSH_DIR"
-        chmod 700 "$SSH_DIR"
-    fi
+	if [ ! -d "$SSH_DIR" ]; then
+		mkdir -p "$SSH_DIR"
+		chmod 700 "$SSH_DIR"
+	fi
 }
 
 list_hosts() {
-    if [ ! -f "$SSH_CONFIG" ]; then
-        echo "No SSH config file found at $SSH_CONFIG"
-        return
-    fi
+	if [ ! -f "$SSH_CONFIG" ]; then
+		echo "No SSH config file found at $SSH_CONFIG"
+		return 1
+	fi
 
-    echo "Configured SSH hosts:"
-    grep "^Host " "$SSH_CONFIG" | sed 's/Host /  - /'
+	echo "Configured SSH hosts:"
+	grep "^Host " "$SSH_CONFIG" | sed 's/Host /  - /'
 }
 
 add_host() {
-    ensure_ssh_dir
+	ensure_ssh_dir
+	echo "Enter host alias: "
+	read -r host_alias
+	echo "Enter hostname/IP: "
+	read -r hostname
+	echo "Enter username: "
+	read -r username
+	echo "Enter port (default 22): "
+	read -r port
+	port=${port:-22}
+	echo "Enter identity file path (optional): "
+	read -r identity_file
 
-    read -p "Enter host alias: " host_alias
-    read -p "Enter hostname/IP: " hostname
-    read -p "Enter username: " username
-    read -p "Enter port (default 22): " port
-    port=${port:-22}
-    read -p "Enter identity file path (optional): " identity_file
+	{
+		echo ""
+		echo "Host $host_alias"
+		echo "    HostName $hostname"
+		echo "    User $username"
+		echo "    Port $port"
+		echo "    IdentityFile $identity_file"
+	} >>"$SSH_CONFIG"
 
-    echo "" >> "$SSH_CONFIG"
-    echo "Host $host_alias" >> "$SSH_CONFIG"
-    echo "    HostName $hostname" >> "$SSH_CONFIG"
-    echo "    User $username" >> "$SSH_CONFIG"
-    echo "    Port $port" >> "$SSH_CONFIG"
-
-    if [ -n "$identity_file" ]; then
-        echo "    IdentityFile $identity_file" >> "$SSH_CONFIG"
-    fi
-
-    echo "SSH host '$host_alias' added successfully!"
+	echo "SSH host '$host_alias' added successfully!"
 }
 
 remove_host() {
-    local host="$1"
+	local host="$1"
 
-    if [ -z "$host" ]; then
-        echo "Error: Host name required"
-        exit 1
-    fi
+	if [ -z "$host" ]; then
+		echo "Error: Host name required"
+		exit 1
+	fi
 
-    if [ ! -f "$SSH_CONFIG" ]; then
-        echo "No SSH config file found"
-        exit 1
-    fi
+	if [ ! -f "$SSH_CONFIG" ]; then
+		echo "No SSH config file found"
+		exit 1
+	fi
 
-    sed -i "/^Host $host$/,/^$/d" "$SSH_CONFIG"
-    echo "Host '$host' removed from SSH config"
+	sed -i "/^Host $host$/,/^$/d" "$SSH_CONFIG"
+	echo "Host '$host' removed from SSH config"
 }
 
 show_host() {
-    local host="$1"
+	local host="$1"
 
-    if [ -z "$host" ]; then
-        echo "Error: Host name required"
-        exit 1
-    fi
+	if [ -z "$host" ]; then
+		echo "Error: Host name required"
+		exit 1
+	fi
 
-    if [ ! -f "$SSH_CONFIG" ]; then
-        echo "No SSH config file found"
-        exit 1
-    fi
+	if [ ! -f "$SSH_CONFIG" ]; then
+		echo "No SSH config file found"
+		exit 1
+	fi
 
-    sed -n "/^Host $host$/,/^$/p" "$SSH_CONFIG"
+	sed -n "/^Host $host$/,/^$/p" "$SSH_CONFIG"
 }
 
 backup_config() {
-    if [ ! -f "$SSH_CONFIG" ]; then
-        echo "No SSH config file to backup"
-        exit 1
-    fi
+	if [ ! -f "$SSH_CONFIG" ]; then
+		echo "No SSH config file to backup"
+		exit 1
+	fi
 
-    local backup_file="$SSH_CONFIG.backup.$(date +%Y%m%d_%H%M%S)"
-    cp "$SSH_CONFIG" "$backup_file"
-    echo "SSH config backed up to: $backup_file"
+	local backup_file
+	backup_file="$SSH_CONFIG.backup.$(date +%Y%m%d_%H%M%S)"
+	cp "$SSH_CONFIG" "$backup_file"
+	echo "SSH config backed up to: $backup_file"
 }
 
 restore_config() {
-    local backup_file="$1"
+	local backup_file="$1"
 
-    if [ -z "$backup_file" ]; then
-        echo "Error: Backup file path required"
-        exit 1
-    fi
+	if [ -z "$backup_file" ]; then
+		echo "Error: Backup file path required"
+		exit 1
+	fi
 
-    if [ ! -f "$backup_file" ]; then
-        echo "Error: Backup file not found"
-        exit 1
-    fi
+	if [ ! -f "$backup_file" ]; then
+		echo "Error: Backup file not found"
+		exit 1
+	fi
 
-    cp "$backup_file" "$SSH_CONFIG"
-    chmod 600 "$SSH_CONFIG"
-    echo "SSH config restored from: $backup_file"
+	cp "$backup_file" "$SSH_CONFIG"
+	chmod 600 "$SSH_CONFIG"
+	echo "SSH config restored from: $backup_file"
 }
 
 case "${1:-list}" in
-    -h|--help)
-        show_help
-        exit 0
-        ;;
-    list)
-        list_hosts
-        ;;
-    add)
-        add_host
-        ;;
-    remove)
-        remove_host "$2"
-        ;;
-    show)
-        show_host "$2"
-        ;;
-    backup)
-        backup_config
-        ;;
-    restore)
-        restore_config "$2"
-        ;;
-    *)
-        echo "Unknown command: $1"
-        show_help
-        exit 1
-        ;;
+-h | --help)
+	show_help
+	exit 0
+	;;
+list)
+	list_hosts
+	;;
+add)
+	add_host
+	;;
+remove)
+	remove_host "$2"
+	;;
+show)
+	show_host "$2"
+	;;
+backup)
+	backup_config
+	;;
+restore)
+	restore_config "$2"
+	;;
+*)
+	echo "Unknown command: $1"
+	show_help
+	exit 1
+	;;
 esac
