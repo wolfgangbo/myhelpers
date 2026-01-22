@@ -56,14 +56,14 @@ function add_host
     test -z "$port"; and set port 22
     read -P "Enter identity file path (optional): " identity_file
 
-    echo "" >> $SSH_CONFIG
-    echo "Host $host_alias" >> $SSH_CONFIG
-    echo "    HostName $hostname" >> $SSH_CONFIG
-    echo "    User $username" >> $SSH_CONFIG
-    echo "    Port $port" >> $SSH_CONFIG
+    echo "" >>$SSH_CONFIG
+    echo "Host $host_alias" >>$SSH_CONFIG
+    echo "    HostName $hostname" >>$SSH_CONFIG
+    echo "    User $username" >>$SSH_CONFIG
+    echo "    Port $port" >>$SSH_CONFIG
 
     if test -n "$identity_file"
-        echo "    IdentityFile $identity_file" >> $SSH_CONFIG
+        echo "    IdentityFile $identity_file" >>$SSH_CONFIG
     end
 
     echo "SSH host '$host_alias' added successfully!"

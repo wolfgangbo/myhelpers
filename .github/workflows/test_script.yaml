@@ -54,9 +54,16 @@ jobs:
           done
 
       - name: Smoke Test (Fish --help)
-        shell: fish
         run: |
-          for file in fish/*.fish
+          for file in fish/*.fish; do
             echo "Running $file --help"
-            ./$file --help || exit 1
-          end
+            fish "$file" --help || exit 1
+          done
+      - name: Verify Fish formatting
+        run: |
+          for file in fish/*.fish; do
+            echo "Running $file check"
+            if [ -f "$file" ]; then
+             fish -c "fish_indent --check $file" || exit 1
+            fi
+          done

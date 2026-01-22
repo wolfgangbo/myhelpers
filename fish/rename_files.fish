@@ -28,7 +28,7 @@ set -l pattern ""
 set -l replacement ""
 set -l directory "."
 
-argparse 'h/help' 'r/recursive' 'd/dry-run' 'v/verbose' 'e/extension=' -- $argv
+argparse h/help r/recursive d/dry-run v/verbose 'e/extension=' -- $argv
 or return 1
 
 if set -q _flag_help

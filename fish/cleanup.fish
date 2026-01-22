@@ -26,7 +26,7 @@ set -l clean_user no
 set -l dry_run no
 set -l verbose no
 
-argparse 'h/help' 'a/all' 's/system' 'u/user' 'd/dry-run' 'v/verbose' -- $argv
+argparse h/help a/all s/system u/user d/dry-run v/verbose -- $argv
 or return 1
 
 if set -q _flag_help

@@ -22,7 +22,7 @@ set -l auto_confirm no
 set -l clean_cache no
 set -l verbose no
 
-argparse 'h/help' 'a/auto' 'c/clean' 'v/verbose' -- $argv
+argparse h/help a/auto c/clean v/verbose -- $argv
 or return 1
 
 if set -q _flag_help
@@ -35,15 +35,15 @@ set -q _flag_clean; and set clean_cache yes
 set -q _flag_verbose; and set verbose yes
 
 function detect_package_manager
-    if command -v apt-get &> /dev/null
+    if command -v apt-get &>/dev/null
         echo apt
-    else if command -v dnf &> /dev/null
+    else if command -v dnf &>/dev/null
         echo dnf
-    else if command -v yum &> /dev/null
+    else if command -v yum &>/dev/null
         echo yum
-    else if command -v pacman &> /dev/null
+    else if command -v pacman &>/dev/null
         echo pacman
-    else if command -v zypper &> /dev/null
+    else if command -v zypper &>/dev/null
         echo zypper
     else
         echo unknown

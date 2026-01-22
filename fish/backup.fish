@@ -24,7 +24,7 @@ set -l verbose no
 set -l source ""
 set -l destination ""
 
-argparse 'h/help' 'c/compress' 't/timestamp' 'v/verbose' -- $argv
+argparse h/help c/compress t/timestamp v/verbose -- $argv
 or return 1
 
 if set -q _flag_help
