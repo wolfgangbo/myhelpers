@@ -21,10 +21,10 @@ function show_help
     echo "    "(basename (status -f))" -sv"
 end
 
-set -l clean_system no
-set -l clean_user no
-set -l dry_run no
-set -l verbose no
+set clean_system no
+set clean_user no
+set dry_run no
+set verbose no
 
 argparse h/help a/all s/system u/user d/dry-run v/verbose -- $argv
 or return 1
@@ -43,7 +43,7 @@ set -q _flag_user; and set clean_user yes
 set -q _flag_dry_run; and set dry_run yes
 set -q _flag_verbose; and set verbose yes
 
-if test $clean_system = no -a $clean_user = no
+if test "$clean_system" = no; and test "$clean_user" = no
     set clean_user yes
 end
 
@@ -52,13 +52,13 @@ function cleanup_directory
     set -l description $argv[2]
 
     if not test -d $dir
-        test $verbose = yes; and echo "Skipping $description: Directory does not exist"
+        test "$verbose" = yes; and echo "Skipping $description: Directory does not exist"
         return
     end
 
     echo "Cleaning $description: $dir"
 
-    if test $dry_run = yes
+    if test "$dry_run" = yes
         find $dir -type f -mtime +7 2>/dev/null | while read -l file
             echo "[DRY RUN] Would delete: $file"
         end
@@ -69,14 +69,14 @@ function cleanup_directory
     end
 end
 
-if test $clean_user = yes
+if test "$clean_user" = yes
     echo "=== Cleaning user temporary files ==="
     cleanup_directory $HOME/.cache "User cache"
     cleanup_directory /tmp "Temporary directory"
     cleanup_directory $HOME/Downloads "Downloads (old files)"
 end
 
-if test $clean_system = yes
+if test "$clean_system" = yes
     echo "=== Cleaning system temporary files ==="
     if test (id -u) -ne 0
         echo "Warning: System cleanup requires sudo privileges"
