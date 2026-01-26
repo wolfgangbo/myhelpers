@@ -2,8 +2,8 @@
 
 # Manage SSH configuration files
 
-set -l SSH_CONFIG $HOME/.ssh/config
-set -l SSH_DIR $HOME/.ssh
+set SSH_CONFIG $HOME/.ssh/config
+set SSH_DIR $HOME/.ssh
 
 function show_help
     echo "Usage: "(basename (status -f))" [COMMAND] [OPTIONS]"
