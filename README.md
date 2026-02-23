@@ -21,3 +21,6 @@ But the addvance of using the terminal with some home scripts can effectivisize 
 - [rename_files.fish](fish/rename_files.fish): Rename multiple files with a given pattern.
 - [ssh_config.fish](fish/ssh_config.fish): Manage SSH configuration files.
 - [update_packages.fish](fish/update_packages.fish): Update system packages and dependencies.
+
+
+### Play with me!
