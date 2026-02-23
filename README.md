@@ -24,3 +24,5 @@ But the addvance of using the terminal with some home scripts can effectivisize 
 
 
 ### Play with me!
+
+Now after set the remote to qa it should only pushes to qa and it should create a pull request on the origin.
