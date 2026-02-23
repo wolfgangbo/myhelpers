@@ -1,6 +1,6 @@
 # My little helpers
 
-Some scripts I use in my daily life.
+Some scripts I use allmost in my daily life.
 
 ## bash
 
