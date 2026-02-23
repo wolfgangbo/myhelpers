@@ -2,6 +2,9 @@
 
 Some scripts I use allmost in my daily life.
 
+Seometimes it's difficult to work with GUI applications and you have to open the application. Only by using the mouse extensively allows to navitage in the the GUI.
+But the addvance of using the terminal with some home scripts can effectivisize the process of changing file names, bacjup or list the ssh configs.
+
 ## bash
 
 - [backup.sh](bash/backup.sh): Backup files and directories to a specified location.
